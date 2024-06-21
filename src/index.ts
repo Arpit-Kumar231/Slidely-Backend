@@ -96,6 +96,15 @@ app.put("/update", (req: Request, res: Response) => {
     res.status(404).send("Submission not found");
   }
 });
+app.get("/fetch-by-email", (req: Request, res: Response) => {
+  const email = req.query.email as string;
+  const submissions = loadSubmissions();
+  const emailSpecificUser = submissions.find(
+    (user: any) => user.email === email
+  );
+  res.send(emailSpecificUser);
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
