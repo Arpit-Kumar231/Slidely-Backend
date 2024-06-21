@@ -8,6 +8,17 @@ const app = express();
 const PORT = 3000;
 const dbFilePath = path.join(__dirname, "db.json");
 
+function readDB(): Submission[] {
+  if (fs.existsSync(dbFilePath)) {
+    const data = fs.readFileSync(dbFilePath, "utf8");
+    return JSON.parse(data);
+  }
+  return [];
+}
+function writeDB(data: Submission[]): void {
+  fs.writeFileSync(dbFilePath, JSON.stringify(data, null, 2), "utf8");
+}
+
 app.use(bodyParser.json());
 interface Submission {
   Name: string;
@@ -53,4 +64,38 @@ app.get("/read", (req: Request, res: Response) => {
   } else {
     res.status(404).json({ error: "Submission not found" });
   }
+});
+app.delete("/delete", (req: Request, res: Response) => {
+  const index = parseInt(req.query.index as string, 10);
+  const submissions = readDB();
+  if (index >= 0 && index < submissions.length) {
+    submissions.splice(index, 1);
+    writeDB(submissions);
+    res.sendStatus(200);
+  } else {
+    res.sendStatus(404);
+  }
+});
+
+app.put("/update", (req: Request, res: Response) => {
+  const index = parseInt(req.query.index as string, 10);
+  const { Name, Email, PhoneNumber, GitHubLink, StopwatchTime } = req.body;
+  let submissions = readDB();
+
+  if (index >= 0 && index < submissions.length) {
+    submissions[index] = {
+      Name,
+      Email,
+      PhoneNumber,
+      GitHubLink,
+      StopwatchTime,
+    };
+    writeDB(submissions);
+    res.send("Submission updated successfully!");
+  } else {
+    res.status(404).send("Submission not found");
+  }
+});
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
