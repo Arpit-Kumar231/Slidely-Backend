@@ -23,7 +23,7 @@ app.use(bodyParser.json());
 interface Submission {
   Name: string;
   Email: string;
-  PhoneNumber: string; // keeping it string for now, type will generally be number
+  PhoneNumber: string;
   GitHubLink: string;
   StopwatchTime: string;
 }
