@@ -8,4 +8,4 @@ requirements - node js installed on computer
 
 ### Step 2 - run the command : `npm run dev`
 
-#### Note: Nodemon is not added so any changes made to the server will be visible after restarting the server
+
